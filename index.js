@@ -124,17 +124,30 @@ app.post("/app/user/auth", function (req, res) {
 //list saved notes
 app.get("/app/sites/list", function (req, res) {
   console.log(req.query.user);
-  var query = "SELECT * FROM notes where user_id = ?";
-  con.query(query, req.query.user, function (err, result) {
+  var q1 = "SELECT * from users where user_id= ?";
+  con.query(q1, [req.query.user], function (err, result) {
     if (err) {
       throw err;
     }
-    var a = [];
-    for (var i = 0; i < result.length; i++) {
-      var decrypted = decrypt(result[i].note);
-      a.push(decrypted);
+    console.log(result);
+    if (result.length == 0) {
+      res.json({
+        message: "user not found",
+      });
+    } else {
+      var query = "SELECT * FROM notes where user_id = ?";
+      con.query(query, req.query.user, function (err, result) {
+        if (err) {
+          throw err;
+        }
+        var a = [];
+        for (var i = 0; i < result.length; i++) {
+          var decrypted = decrypt(result[i].note);
+          a.push(decrypted);
+        }
+        res.json(a);
+      });
     }
-    res.json(a);
   });
 });
 
