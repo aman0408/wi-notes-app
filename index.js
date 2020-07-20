@@ -150,15 +150,28 @@ app.post("/app/sites", function (req, res) {
       message: "note is required",
     });
   }
-  var query = "INSERT INTO notes (user_id,note) VALUES (?)";
-  var values = [req.query.user, encrypt(req.body.note)];
-  con.query(query, [values], function (err, result) {
+  var q1 = "SELECT * from users where user_id= ?";
+  con.query(q1, [req.query.user], function (err, result) {
     if (err) {
       throw err;
     }
-    res.json({
-      status: "success",
-    });
+    console.log(result);
+    if (result.length == 0) {
+      res.json({
+        message: "user not found",
+      });
+    } else {
+      var query = "INSERT INTO notes (user_id,note) VALUES (?)";
+      var values = [req.query.user, encrypt(req.body.note)];
+      con.query(query, [values], function (err, result) {
+        if (err) {
+          throw err;
+        }
+        res.json({
+          status: "success",
+        });
+      });
+    }
   });
 });
 var port = process.env.PORT || 3000;
