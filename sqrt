@@ -1,0 +1,20 @@
+for(int i=1;;i++){
+    int a=i*i;
+    if(a==n){
+        return i;
+    }else if(a>n){
+        return i-1;
+    }
+}
+
+11
+
+1*1=1
+2*2=4
+3*3=9
+4*4=16
+
+Ans:3
+
+9
+
